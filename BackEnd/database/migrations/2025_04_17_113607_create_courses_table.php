@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('youtube_url')->nullable();
             $table->string('pdf_detail')->nullable();
             $table->string('pdf_resume')->nullable();
+            $table->text('steps')->nullable(); // ou use longText() si le contenu est très long
+
             $table->timestamps();
         });
     }

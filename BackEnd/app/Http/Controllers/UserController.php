@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+
 
 class UserController extends Controller
 {
@@ -22,17 +24,29 @@ class UserController extends Controller
     }
     
     public function index()
-    {
+{
+    try {
         return response()->json(User::all());
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Server Error: '.$e->getMessage()], 500);
     }
+}
 
     public function show(string $id)
     {
         $user = User::find($id);
-        if(! $user){
-            return response()->json(['message'=>'User not found'],404);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
-        return response()->json($user);
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role, // Explicitly include role
+            'level' => $user->level ?? 'Not specified', // Handle missing level gracefully
+            'joinedDate' => $user->created_at,
+        ]);
     }
 
     /**
@@ -53,11 +67,11 @@ class UserController extends Controller
             return response()->json(['message'=>'User not found',404]);
         }
         $request->validate([
-            'name'=>'sometimes|string|max:100',
-            'email'=>'sometimes|email|unique:users,email'.$id,
-            'password'=>'sometimes|min:6|confirmed',
-            
+            'name' => 'sometimes|string|max:100',
+            'email' => 'sometimes|email|unique:users,email,' . $id,
+            'password' => 'sometimes|min:6|confirmed',
         ]);
+        
         if ($request->has('name')){
             $user->name =$request->name;
         }
@@ -65,11 +79,14 @@ class UserController extends Controller
             $user->email= $request->email;
         }
         if ($request->has('password')){
-            $user->email = Hash::make($request->password);
+            $user->password = Hash::make($request->password);
         }
 
         $user->save();
-         return response()->json(['message'=>'User updated succesfuly','user',$user]);
+        return response()->json([
+            'message' => 'User updated successfully',
+            'user' => $user, // Fix array formatting
+        ]);
     }
 
     /**

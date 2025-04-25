@@ -1,15 +1,18 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import Features from '../HomePage/Features';
+import React from "react";
+import { useLocation } from "react-router-dom";
+import Features from "./Features";
 
 export default function ChooseWhat() {
   const location = useLocation();
-  const username = location.state?.username || location.state?.name || "User"; // Handle both keys
+  const userLevel = sessionStorage.getItem("techLevel");
+  const username = location.state?.username || "User";
+
   return (
-    <div className='question-page'>
+    <div className="question-page">
       <h5>Welcome {username}, to TechnoFy</h5>
+      <h4>Your current tech level is: {userLevel}</h4>
       <h4>Now choose your next step</h4>
-      <Features />
+      <Features userLevel={userLevel} />
     </div>
   );
 }

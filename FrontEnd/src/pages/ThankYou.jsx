@@ -6,9 +6,6 @@ function ThankYou() {
   const handleSignIn = () => {
     navigate("/SignIn");
   };
-  const handleLogin = () => {
-    navigate("/Login");
-  };
 
   return (
     <div className="thankyou-container">
@@ -20,9 +17,7 @@ function ThankYou() {
         <button className="button-pink thankyou-button" onClick={handleSignIn}>
           Sign in &#10174;
         </button>
-        <button className="button-pink thankyou-button" onClick={handleLogin}>
-          Log in &#10174;
-        </button>
+        
       </div>
     </div>
   );

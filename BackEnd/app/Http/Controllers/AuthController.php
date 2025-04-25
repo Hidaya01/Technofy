@@ -16,25 +16,28 @@ class AuthController extends Controller
 
     // login 
     public function login(Request $request)
-    {
-        $validated = $request->validate([
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8',
-        ]);
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-        $user = User::where('email', $validated['email'])->first();
+    $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        Auth::login($user);
-
-        return response()->json([
-            'message' => 'Login successful!',
-            'user_name' => $user->name,
-        ]);
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
+
+    // Authentifier avec session (Sanctum)
+    Auth::login($user);
+
+    return response()->json([
+        'message' => 'Login successful!',
+        'user' => $user,
+        "role" => $user->role,
+        'user_name' => $user->name, // Send user name to frontend
+    ]);
+}
 
     // public function showRegister()
     // {
