@@ -2,10 +2,29 @@ import { useState, useEffect, useRef } from "react";
 import { FaUser, FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
+const CustomConfirmModal = ({ message, onConfirm, onCancel }) => {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <p>{message}</p>
+        <div className="modal-buttons">
+          <button className="button-pink" onClick={onConfirm}>
+            Confirm
+          </button>
+          <button className="button-pink" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [username, setUsername] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
   const menuRef = useRef(null);
   const burgerRef = useRef(null);
   const navigate = useNavigate();
@@ -20,12 +39,18 @@ function Header() {
   }, []);
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
-      localStorage.removeItem("user");
-      setIsLoggedIn(false);
-      navigate("/login");
-    }
+    setShowConfirm(true);
+  };
+
+  const confirmLogout = () => {
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    setShowConfirm(false);
+    navigate("/login");
+  };
+
+  const cancelLogout = () => {
+    setShowConfirm(false);
   };
 
   const toggleMenu = () => {
@@ -64,12 +89,12 @@ function Header() {
   return (
     <header className="header sticky">
       <div className="logo-container">
-      <Link 
-        to={isLoggedIn ? "/choose-what" : "/"} 
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      >
-        <img src="/v.png" alt="TechnoFy Logo" className="logo-img" />
-      </Link>
+        <Link 
+          to={isLoggedIn ? "/choose-what" : "/"} 
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
+          <img src="/v.png" alt="TechnoFy Logo" className="logo-img" />
+        </Link>
       </div>
 
       <div className="mobile-menu-btn" onClick={toggleMenu} ref={burgerRef}>
@@ -92,6 +117,14 @@ function Header() {
           <Link to="/login" className="button-nav">Login</Link>
         )}
       </nav>
+      
+      {showConfirm && (
+        <CustomConfirmModal
+          message="Are you sure you want to log out?"
+          onConfirm={confirmLogout}
+          onCancel={cancelLogout}
+        />
+      )}
     </header>
   );
 }
