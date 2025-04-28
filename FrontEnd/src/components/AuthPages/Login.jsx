@@ -82,7 +82,7 @@ const Login = () => {
               <div
                 className="forgotPasswordStyle"
                 onClick={handleForgotPasswordClick}
-                style={{ cursor: "pointer", color: "#007bff", textDecoration: "underline" }}
+                style={{ cursor: "pointer", color: "#007bff", textDecoration: "underline" ,textAlign:"center"}}
               >
                 Forgot password?
               </div>

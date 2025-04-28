@@ -15,7 +15,7 @@ function ThankYou() {
           We hope to help you and benefit you so that you learn what you want
         </h1>
         <button className="button-pink thankyou-button" onClick={handleSignIn}>
-          Sign in &#10174;
+          Sign Up &#10174;
         </button>
         
       </div>

@@ -42,5 +42,15 @@ class AdminSeeder extends Seeder
                 'role' => 'admin',
             ]
         );
+        User::updateOrCreate(
+            ['email' => 'hidaya@gmail.com'],
+            [
+                'name' => 'Hidaya',
+                'email' => 'hidaya@gmail.com',
+                'password' => Hash::make('12345678'), // tu peux modifier le mot de passe
+                'role' => 'étudiant',
+                'level' =>'beginner'
+            ]
+        );
     }
 }

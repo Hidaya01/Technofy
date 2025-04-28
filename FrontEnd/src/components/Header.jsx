@@ -64,9 +64,12 @@ function Header() {
   return (
     <header className="header sticky">
       <div className="logo-container">
-        <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          <img src="v.png" alt="TechnoFy Logo" className="logo-img" />
-        </Link>
+      <Link 
+        to={isLoggedIn ? "/choose-what" : "/"} 
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        <img src="/v.png" alt="TechnoFy Logo" className="logo-img" />
+      </Link>
       </div>
 
       <div className="mobile-menu-btn" onClick={toggleMenu} ref={burgerRef}>

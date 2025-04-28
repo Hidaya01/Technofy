@@ -8,6 +8,8 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\QuizController;
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -38,3 +40,5 @@ Route::get('/comments/{id}', [CommentController::class, 'show']);
 Route::post('/comments', [CommentController::class, 'store']);
 Route::put('/comments/{id}', [CommentController::class, 'update']);
 Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
+
+Route::get('/quiz/{id}', [QuizController::class, 'show']);

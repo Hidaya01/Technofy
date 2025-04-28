@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
 /*body style*/
 html, body, #root {
   height: 100%;
@@ -689,7 +691,6 @@ h4 {
 }
 
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 @keyframes fadeInUp {
   from {
@@ -1816,7 +1817,6 @@ body {
 
 .code-block3 {
   background-color: #e6e6e6; /* Dark background for code */
-  opacity: 0.4;
   color: #0d1748; /* Bright greenish code color */
   padding: 15px;
   border-radius: 10px;
@@ -2154,7 +2154,6 @@ textarea:focus {
 }
 
 .course-section3 {
-  text-align: center;
   margin-bottom: 40px;
   animation: fadeIn 0.8s ease-out;
 }

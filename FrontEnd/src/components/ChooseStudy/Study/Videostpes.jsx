@@ -1,88 +1,101 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Videosteps = () => {
   const params = useParams();
-  const location = useLocation();
+  console.log('All URL params:', params); // Debug all parameters
+  console.log('Current URL:', window.location.href); // Debug current URL
+  
+  const { id } = params;
+  console.log('Extracted ID:', id); // Debug the specific ID
   const [steps, setSteps] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  // Debugging output
-  console.log('Router params:', params);
-  console.log('Current path:', location.pathname);
-
-  const { id } = params;
-
+  
   useEffect(() => {
-    // Validate ID before making API call
-    if (!id || id === 'undefined') {
-      console.error('Invalid ID:', id);
-      setError('Invalid course ID in URL');
-      setLoading(false);
+    if (!id) {
+      console.error("No course ID provided in URL");
+      setError("Invalid course URL");
       return;
     }
-
-    setLoading(true);
+    // Fetch course data
     axios.get(`http://localhost:8000/api/courses/${id}`)
       .then(res => {
-        const rawSteps = res.data.steps || '';
-        const parsedSteps = rawSteps.split('\n')
+        console.log('API Response:', res.data); // Log the full response to check the structure
+        const rawSteps = res.data.steps || ''; // Ensure steps exist, else default to empty string
+
+        // Check if the steps are missing or empty
+        if (!rawSteps) {
+          console.log("No steps found in the API response");
+          setError("No steps available for this course.");
+          return;
+        }
+
+        // Parsing the steps
+        const parsed = rawSteps
+          .split('\n')  // Split the steps by line breaks
           .map(line => {
+            // Match timestamp format (hh:mm:ss) or lines without timestamp
             const match = line.match(/^\s*(\(\d{2}:\d{2}:\d{2}\))?\s*(.*)$/);
-            return match ? {
-              title: match[2].trim(),
-              duration: match[1] ? match[1].slice(1, -1) : null
-            } : null;
+            if (!match) return null; // Skip lines that don't match
+
+            const [, time, title] = match;
+            const duration = time ? time.slice(1, -1) : null; // Remove parentheses from the time
+
+            return {
+              title: title.trim(),
+              duration,
+            };
           })
-          .filter(Boolean);
-        
-        setSteps(parsedSteps);
-        setError(parsedSteps.length === 0 ? 'No steps available' : null);
+          .filter(Boolean);  // Remove any null values from the array
+
+        if (parsed.length === 0) {
+          setError("No valid steps found.");
+        }
+
+        setSteps(parsed);
       })
       .catch(err => {
-        console.error('API Error:', err);
-        setError(err.response?.status === 404 
-          ? 'Course not found' 
-          : 'Error loading course data');
-      })
-      .finally(() => setLoading(false));
+        console.error("Error fetching data:", err);
+        if (err.response) {
+          // The request was made and the server responded with a status code
+          if (err.response.status === 404) {
+            setError("Course not found");
+          } else {
+            setError(`Server error: ${err.response.status}`);
+          }
+        } else if (err.request) {
+          // The request was made but no response was received
+          setError("Network error - could not connect to server");
+        } else {
+          // Something happened in setting up the request
+          setError("Error setting up request");
+        }
+      });
   }, [id]);
-
-  if (!id) {
-    return (
-      <div className="video-section">
-        <div className="error-message">
-          Error: No course ID specified in the URL.
-          <p>Expected URL format: /courses/123</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="video-section">
       <div className="section-header">
         <span>{steps.length} étapes</span>
       </div>
-      
-      {loading ? (
-        <div>Loading course details...</div>
-      ) : error ? (
-        <div className="error-message">{error}</div>
-      ) : (
-        <ul className="steps-list">
-          {steps.map((step, index) => (
-            <li key={index} className="step-item">
-              <span className="step-title">{step.title}</span>
-              {step.duration && (
-                <span className="step-duration">({step.duration})</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="steps-list">
+        {error ? (
+          <li>{error}</li>
+        ) : (
+          steps.length > 0 ? (
+            steps.map((step, index) => (
+              <li key={index} className="step-item">
+                <span className="step-title">{step.title}</span>
+                {step.duration && <span className="step-duration">({step.duration})</span>}
+              </li>
+            ))
+          ) : (
+            <li>No steps available</li>
+          )
+        )}
+      </ul>
     </div>
   );
 };

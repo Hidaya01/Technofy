@@ -217,15 +217,15 @@ const ContactPage = ( {id} ) => {
           }}>Other Ways to Reach Us</h3>
           <p style={{ color: '#ccc', margin: '10px 0' }}>
             <i className="fas fa-envelope" style={{ marginRight: '10px', color: '#00f0ff' }}></i> 
-            Email: contact@yourcompany.com
+            Email: contact@technofy.com
           </p>
           <p style={{ color: '#ccc', margin: '10px 0' }}>
             <i className="fas fa-phone" style={{ marginRight: '10px', color: '#00f0ff' }}></i> 
-            Phone: +1 (555) 123-4567
+            Phone: +212 70009 1574
           </p>
           <p style={{ color: '#ccc', margin: '10px 0' }}>
             <i className="fas fa-map-marker-alt" style={{ marginRight: '10px', color: '#00f0ff' }}></i> 
-            Address: 123 Business St, City, Country
+            Tangier
           </p>
         </div>
       </div>

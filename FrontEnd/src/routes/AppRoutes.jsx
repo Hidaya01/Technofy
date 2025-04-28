@@ -36,6 +36,8 @@ import EcritureStructuree from '../components/ChooseStudy/Study/Langue/level2/Fr
 import GrammaireAvancee from '../components/ChooseStudy/Study/Langue/level2/FrancaisCoursL2/Themes/GrammaireAvancee';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import UserProfile from '../pages/profile';
+import QuizPage from '../components/ChooseStudy/Study/QuizPage';
+import CertificatePage from '../components/ChooseStudy/Study/Certification';
 
 
 const AppRoutes = () => (
@@ -82,6 +84,8 @@ const AppRoutes = () => (
     <Route path="/courslangue/francais2/communication-avancee" element={<CommunicationAvancee />} />
     <Route path="/courslangue/francais2/grammaire-avancee" element={<GrammaireAvancee />} />
     <Route path="/courslangue/francais2/ecriture-structuree" element={<EcritureStructuree />} />
+    <Route path="/quiz/:id" element={<QuizPage />} />
+    <Route path="/certificate" element={<CertificatePage />} />
 
     <Route path="/profile" element={<UserProfile/>} />
 

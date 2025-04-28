@@ -10,7 +10,7 @@ export default function ChooseWhat() {
   return (
     <div className="question-page">
       <h5>Welcome {username}, to TechnoFy</h5>
-      <h4>Your current tech level is: {userLevel}</h4>
+      <h4>Your current tech level is: Beginner {userLevel}</h4>
       <h4>Now choose your next step</h4>
       <Features userLevel={userLevel} />
     </div>

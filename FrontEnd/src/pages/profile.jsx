@@ -170,10 +170,10 @@ const UserProfile = () => {
               <p className="profile-bio">{user.bio}</p>
               <div className="profile-meta">
                 <span className="meta-item">
-                  <strong>Role:</strong> {user.role}
+                  <strong>Role: </strong>Student{user.role}
                 </span>
                 <span className="meta-item">
-                  <strong>Level:</strong> {user.level}
+                  <strong>Level:</strong>Beginner {user.level}
                 </span>
                 <span className="meta-item">
                   <strong>Member since:</strong> {new Date(user.joinedDate).toLocaleDateString()}

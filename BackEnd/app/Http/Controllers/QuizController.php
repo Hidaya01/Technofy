@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Certification;
 use App\Models\UserAnswer;
 use App\Models\Answer;
-
+use App\Models\Quiz;
 class QuizController extends Controller
 {
     public function index()
@@ -40,9 +40,16 @@ class QuizController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        //
+{
+    // Get all questions for this course (not just one quiz)
+    $questions = Quiz::where('course_id', $id)->get();
+
+    if ($questions->isEmpty()) {
+        return response()->json(['message' => 'No questions found for this course'], 404);
     }
+
+    return response()->json($questions);
+}
 
     /**
      * Show the form for editing the specified resource.
