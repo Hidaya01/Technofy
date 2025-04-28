@@ -1,99 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
 
-const Videosteps = () => {
-  const params = useParams();
-  console.log('All URL params:', params); // Debug all parameters
-  console.log('Current URL:', window.location.href); // Debug current URL
-  
-  const { id } = params;
-  console.log('Extracted ID:', id); // Debug the specific ID
+const Videosteps = ({ lessonId }) => {  // Changed from useParams to props
   const [steps, setSteps] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  
   useEffect(() => {
-    if (!id) {
-      console.error("No course ID provided in URL");
-      setError("Invalid course URL");
+    console.log('Received lessonId:', lessonId); // Debug the prop
+    
+    if (!lessonId) {
+      console.error("No lesson ID provided");
+      setError("Invalid course - missing ID");
+      setLoading(false);
       return;
     }
-    // Fetch course data
-    axios.get(`http://localhost:8000/api/courses/${id}`)
-      .then(res => {
-        console.log('API Response:', res.data); // Log the full response to check the structure
-        const rawSteps = res.data.steps || ''; // Ensure steps exist, else default to empty string
 
-        // Check if the steps are missing or empty
+    setLoading(true);
+    axios.get(`http://localhost:8000/api/courses/${lessonId}`)
+      .then(res => {
+        const rawSteps = res.data.steps || '';
+        
         if (!rawSteps) {
-          console.log("No steps found in the API response");
           setError("No steps available for this course.");
+          setSteps([]);
           return;
         }
 
-        // Parsing the steps
-        const parsed = rawSteps
-          .split('\n')  // Split the steps by line breaks
+        const parsedSteps = rawSteps
+          .split('\n')
           .map(line => {
-            // Match timestamp format (hh:mm:ss) or lines without timestamp
-            const match = line.match(/^\s*(\(\d{2}:\d{2}:\d{2}\))?\s*(.*)$/);
-            if (!match) return null; // Skip lines that don't match
-
-            const [, time, title] = match;
-            const duration = time ? time.slice(1, -1) : null; // Remove parentheses from the time
+            const match = line.match(/^\s*(?:\((\d{2}:\d{2}:\d{2})\))?\s*(.+)?$/);
+            if (!match || !match[2]) return null;
 
             return {
-              title: title.trim(),
-              duration,
+              title: match[2].trim(),
+              duration: match[1] || null
             };
           })
-          .filter(Boolean);  // Remove any null values from the array
+          .filter(Boolean);
 
-        if (parsed.length === 0) {
-          setError("No valid steps found.");
-        }
-
-        setSteps(parsed);
+        setSteps(parsedSteps);
+        setError(null);
       })
       .catch(err => {
         console.error("Error fetching data:", err);
-        if (err.response) {
-          // The request was made and the server responded with a status code
-          if (err.response.status === 404) {
-            setError("Course not found");
-          } else {
-            setError(`Server error: ${err.response.status}`);
-          }
-        } else if (err.request) {
-          // The request was made but no response was received
-          setError("Network error - could not connect to server");
-        } else {
-          // Something happened in setting up the request
-          setError("Error setting up request");
-        }
-      });
-  }, [id]);
+        setError(
+          err.response?.status === 404 
+            ? "Course not found" 
+            : "Error loading course steps"
+        );
+        setSteps([]);
+      })
+      .finally(() => setLoading(false));
+  }, [lessonId]);  // Changed dependency to lessonId
+
+  if (loading) {
+    return <div>Loading steps...</div>;
+  }
 
   return (
     <div className="video-section">
       <div className="section-header">
         <span>{steps.length} étapes</span>
       </div>
+      
       <ul className="steps-list">
         {error ? (
-          <li>{error}</li>
+          <li className="error-message">{error}</li>
+        ) : steps.length > 0 ? (
+          steps.map((step, index) => (
+            <li key={index} className="step-item">
+              <span className="step-title">{step.title}</span>
+              {step.duration && (
+                <span className="step-duration">({step.duration})</span>
+              )}
+            </li>
+          ))
         ) : (
-          steps.length > 0 ? (
-            steps.map((step, index) => (
-              <li key={index} className="step-item">
-                <span className="step-title">{step.title}</span>
-                {step.duration && <span className="step-duration">({step.duration})</span>}
-              </li>
-            ))
-          ) : (
-            <li>No steps available</li>
-          )
+          <li>No steps available</li>
         )}
       </ul>
     </div>

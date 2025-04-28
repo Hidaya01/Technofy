@@ -90,7 +90,6 @@ const VideoLesson = ({ id }) => {
                 <p
                   key={idx}
                   style={{
-                    background: "#f0f0f0",
                     padding: "0.5rem",
                     borderRadius: "5px",
                     marginBottom: "0.5rem",
