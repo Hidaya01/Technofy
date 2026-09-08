@@ -5,7 +5,7 @@ Welcome to the TechnoFy project! This repository contains both the **Frontend** 
 ---
 
 ## **Project Overview**
-TechnoFy is a [briefly explain what the project does, e.g., "platform for educational content and interactive learning"]. It is built using the following technologies:
+TechnoFy is a platform for educational content and interactive learning. It is built using the following technologies:
 - **Frontend**: React.js
 - **Backend**: Laravel (PHP)
 - **Database**: MySQL
